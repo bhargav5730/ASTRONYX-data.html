@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untitled - Notepad</title>
+    <style>
+        /* Classic Windows Notepad-inspired styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        /* Menu Bar styling */
+        .menu-bar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            padding: 2px 5px;
+            user-select: none;
+        }
+
+        .menu-item {
+            position: relative;
+            padding: 5px 10px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Dropdown Menu styling */
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.15);
+            z-index: 1000;
+            min-width: 150px;
+        }
+
+        .menu-item:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 6px 20px;
+            font-size: 13px;
+            color: #000;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .dropdown-item:hover {
+            background-color: #0078d7;
+            color: #fff;
+        }
+
+        /* Text Area (The Notepad canvas) */
+        .notepad-textarea {
+            flex: 1;
+            border: none;
+            resize: none;
+            padding: 10px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 16px;
+            line-height: 1.5;
+            outline: none;
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-bar">
+        <div class="menu-item">
+            File
+            <div class="dropdown">
+                <div class="dropdown-item" onclick="saveDocument()">Save <span style="color: gray; font-size: 11px;">Ctrl+S</span></div>
+                <div class="dropdown-item" onclick="clearDocument()">New</div>
+            </div>
+        </div>
+        <div class="menu-item">Edit</div>
+        <div class="menu-item">Format</div>
+        <div class="menu-item">View</div>
+        <div class="menu-item">Help</div>
+    </div>
+
+    <textarea id="noteArea" class="notepad-textarea" placeholder="Start typing..."></textarea>
+
+    <script>
+        const noteArea = document.getElementById('noteArea');
+
+        // Load saved text from the current session on page load
+        window.onload = function() {
+            const savedText = localStorage.getItem('notepad_session_text');
+            if (savedText) {
+                noteArea.value = savedText;
+            }
+        };
+
+        // Function to save the text to localStorage
+        function saveDocument() {
+            localStorage.setItem('notepad_session_text', noteArea.value);
+            alert("Document saved successfully for this session!");
+        }
+
+        // Function to clear the text
+        function clearDocument() {
+            if (confirm("Are you sure you want to open a new document? Unsaved changes will be lost.")) {
+                noteArea.value = '';
+                localStorage.removeItem('notepad_session_text');
+            }
+        }
+
+        // Optional: Let Ctrl+S trigger the save function automatically
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault(); // Stop the browser's native save dialog
+                saveDocument();
+            }
+        });
+    </script>
+
+</body>
+</html>
